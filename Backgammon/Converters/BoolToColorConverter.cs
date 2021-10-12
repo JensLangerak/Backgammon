@@ -8,7 +8,7 @@ using System.Windows.Media;
 namespace Backgammon.Converters
 {
     /// <summary>
-    /// Class that converts a boolean variable to a color. 
+    /// Class that converts a boolean variable to a colored brush. 
     /// </summary>
     public class BoolToColorConverter : IValueConverter
     {

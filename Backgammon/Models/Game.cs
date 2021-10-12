@@ -103,8 +103,7 @@ namespace Backgammon.Models
         /// <returns>True if the game is over.</returns>
         public bool CheckWinCondition()
         {
-           return board.ColorHasWon(true) || board.ColorHasWon(false); ;
-
+           return board.ColorHasWon(true) || board.ColorHasWon(false);
         }
 
         /// <summary>
@@ -112,7 +111,7 @@ namespace Backgammon.Models
         /// </summary>
         /// <param name="blacksTurn">True if the current player is black.</param>
         /// <returns></returns>
-        internal bool HasLegalMoves(bool blacksTurn)
+        public bool HasLegalMoves(bool blacksTurn)
         {
             if (!Dice1.Used)
             {
@@ -133,7 +132,7 @@ namespace Backgammon.Models
         /// <param name="blacksTurn"></param>
         /// <param name="diceValue"></param>
         /// <returns></returns>
-        private bool HasLegalMoves(bool blacksTurn, int diceValue)
+        protected bool HasLegalMoves(bool blacksTurn, int diceValue)
         {
             if (!blacksTurn)
                 diceValue *= -1;
@@ -177,7 +176,7 @@ namespace Backgammon.Models
         /// </summary>
         /// <param name="source"></param>
         /// <param name="destination"></param>
-        internal void DoMove(Point source, Point destination)
+        public void DoMove(Point source, Point destination)
         {
             if (!IsLegalMove(source, destination))
                 throw new Exception("Illegal move");    
@@ -188,7 +187,7 @@ namespace Backgammon.Models
             }
             else
             {
-                // Check if you remove a checker of the opponent.
+                // Check if you captured a checker of the opponent.
                 if (destination.OwnerColor!= null && destination.NumberOfPieces == 1)
                 {
                     if (destination.OwnerColor == PlayerColor.Black)
@@ -214,7 +213,7 @@ namespace Backgammon.Models
         }
 
         /// <summary>
-        /// Check if the checker can be removed from the game.
+        /// Check if the checker can be removed from the game. And if possible remove the checker.
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
@@ -223,16 +222,28 @@ namespace Backgammon.Models
             int index = board.GetPointIndex(point);
             int end = (point.OwnerColor == PlayerColor.Black) ? board.Points.Length : -1;
             int diff = Math.Abs(end - index);
-            if ((!Dice1.Used) && Dice1.Value >= diff)
-            {
-                point.NumberOfPieces--;
-                Dice1.MarkAsUsed();
+
+            if (TryRemovewithDice(point, diff, Dice1))
                 return true;
-            }
-            if ((!Dice2.Used) && Dice2.Value >= diff)
+
+            if (TryRemovewithDice(point, diff, Dice2))
+                return true;
+            return false;
+        }
+
+        /// <summary>
+        /// Check if the piece can be removed using the given dice.
+        /// </summary>
+        /// <param name="point">Checker that will be removed</param>
+        /// <param name="minDiceValue">Minimum dice value</param>
+        /// <param name="dice">Dice that might be used.</param>
+        /// <returns>True if the dice could be used.</returns>
+        protected bool TryRemovewithDice(Point point, int minDiceValue, Dice dice)
+        {
+            if ((!dice.Used) && dice.Value >= minDiceValue)
             {
                 point.NumberOfPieces--;
-                Dice2.MarkAsUsed();
+                dice.MarkAsUsed();
                 return true;
             }
             return false;
@@ -244,7 +255,7 @@ namespace Backgammon.Models
         /// <param name="source"></param>
         /// <param name="destination"></param>
         /// <returns></returns>
-        private int GetDiff(Point source, Point destination)
+        protected int GetDiff(Point source, Point destination)
         {
             int startIndex = board.GetPointIndex(source);
             int endIndex = board.GetPointIndex(destination);

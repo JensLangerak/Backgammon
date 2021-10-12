@@ -20,6 +20,12 @@ namespace Backgammon.ViewModels
 
         }
 
+        /// <summary>
+        /// Create a new point view model
+        /// </summary>
+        /// <param name="point">Model of the point</param>
+        /// <param name="isOddPosition">If the point is at an odd position.</param>
+        /// <param name="isTop">True if the point belongs to the top row.</param>
         public PointViewModel(Point point, bool isOddPosition, bool isTop)
         {
             this.point = point;
@@ -29,14 +35,23 @@ namespace Backgammon.ViewModels
             OnClickCommand = new RelayCommand(SelectChecker);
         }
 
-        private void SelectChecker(object obj)
+        /// <summary>
+        /// Handle the click command on the checker. Check if it could be clicked, and if it was allowed set it as selected.
+        /// </summary>
+        /// <param name="obj"></param>
+        protected void SelectChecker(object obj)
         {
             // Check if it is allowed to click on the checker. Triggers an event that will be handled by the board.
             if (IsSelectable || IsReachable || IsSelected)
                 IsSelected = !IsSelected;
         }
 
-        private void PointChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Update all ui elements.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void PointChanged(object sender, PropertyChangedEventArgs e)
         {
             OnPropertyChanged(nameof(BorderColor));
             OnPropertyChanged(nameof(NumberOfCheckers));
@@ -47,8 +62,15 @@ namespace Backgammon.ViewModels
 
         public bool IsOddPosition { get; set; }
         public bool IsTop { get; set; }
+
+        /// <summary>
+        /// Number of checkers on the point.
+        /// </summary>
         public int NumberOfCheckers { get => point.NumberOfPieces; }
 
+        /// <summary>
+        /// Should be visible when it contains checkers and when the selected checker can be moved to the point.
+        /// </summary>
         public bool IsVissible
         {
             get => IsControlled || IsReachable;
@@ -56,9 +78,14 @@ namespace Backgammon.ViewModels
 
         public String NumberOfCheckersString { get => NumberOfCheckers.ToString(); }
 
-        public System.Windows.Media.SolidColorBrush TrueColor { get => System.Windows.Media.Brushes.Red; }
-
+        /// <summary>
+        /// True when it is controlled by black. False when it is controlled by white.
+        /// </summary>
         public bool IsControlledByBlack { get => point.OwnerColor == PlayerColor.Black; }
+
+        /// <summary>
+        /// True if it contains a piece of a player.
+        /// </summary>
         public bool IsControlled { get => point.IsControlled; }
 
 
@@ -97,6 +124,9 @@ namespace Backgammon.ViewModels
             }
         }
 
+        /// <summary>
+        /// Convert the current state to a border color.
+        /// </summary>
         public SolidColorBrush BorderColor
         {
             get

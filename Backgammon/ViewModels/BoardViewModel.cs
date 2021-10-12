@@ -20,7 +20,7 @@ namespace Backgammon.ViewModels
         }
         protected Board board;
         protected Game game;
-        private Point selectedPoint;
+        protected Point selectedPoint;
         public Board Board { get => board; set {
                 board = value;
 
@@ -42,10 +42,13 @@ namespace Backgammon.ViewModels
                     allPoints[i + board.Size / 2 + 1] = viewModel;
                 }
                 allPoints[board.Size + 1] = new PointViewModel(board.RespawnPointRed);
+               
+                
+                // Notify that the rows are changed.
                 this.OnPropertyChanged(nameof(TopPoints));
                 this.OnPropertyChanged(nameof(BottomPoints));
               
-
+                // Subscrive to the changes in the points
                 for (int i = 0; i < allPoints.Length; i++)
                 {
                     allPoints[i].PropertyChanged += new PropertyChangedEventHandler(PointChanged);
@@ -54,7 +57,7 @@ namespace Backgammon.ViewModels
 
     }
 
-        private void PointChanged(object sender, PropertyChangedEventArgs e)
+        protected void PointChanged(object sender, PropertyChangedEventArgs e)
         {
             // A point is selected
             if (sender is PointViewModel)
@@ -72,7 +75,7 @@ namespace Backgammon.ViewModels
         /// Update the clickable points based on the current selected point.
         /// </summary>
         /// <param name="vm"></param>
-        private void UpdateSelected(PointViewModel vm)
+        protected void UpdateSelected(PointViewModel vm)
         {
             if (vm.IsSelected)
             {

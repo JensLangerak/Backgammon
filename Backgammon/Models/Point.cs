@@ -17,6 +17,7 @@ namespace Backgammon.Models
             NumberOfPieces = 0;
         }
 
+        // Keep track of who controls the point.
         protected PlayerColor? ownerColor;
         public PlayerColor? OwnerColor
         {
@@ -29,6 +30,7 @@ namespace Backgammon.Models
             get => ownerColor;
         }
 
+        // The number of checkers on the point.
         protected int numberOfPieces;
         public int NumberOfPieces
         {

@@ -32,20 +32,34 @@ namespace Backgammon.ViewModels
             RespawnPointRed = Board.AllPoints[Board.AllPoints.Length - 1];
         }
 
-        private void ThrowDice(object obj)
+        /// <summary>
+        /// Throw the dice, and go to the next turn.
+        /// </summary>
+        /// <param name="obj"></param>
+        protected void ThrowDice(object obj)
         {
             game.NextTurn();
             Board.SetSelectable(game.BlacksTurn);
         }
 
-        private void DiceChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Dice changed callback
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void DiceChanged(object sender, PropertyChangedEventArgs e)
         {
             DiceChached();
         }
 
-        private void DiceChached()
+        /// <summary>
+        /// Dice has been changed, thus a move was made or a new turn was started. Check the win conditions and update the ui elements that might have changed.
+        /// </summary>
+        protected void DiceChached()
         {
+            CheckGameEnd();
             CheckLegalMoves();
+
             OnPropertyChanged(nameof(Dice1));
             OnPropertyChanged(nameof(Dice2));
             OnPropertyChanged(nameof(Dice1Used));
@@ -56,19 +70,30 @@ namespace Backgammon.ViewModels
             OnPropertyChanged(nameof(PlayerString));
         }
 
-        private void CheckLegalMoves()
+        /// <summary>
+        /// Check if the game is finished.
+        /// </summary>
+        public void CheckGameEnd()
         {
             if (game.CheckWinCondition())
             {
-                if (game.Board.ColorHasWon(true)) {
+                if (game.Board.ColorHasWon(true))
+                {
                     MessageBox.Show("Black has won");
                 }
-                else if (game.Board.ColorHasWon(false)) {
+                else if (game.Board.ColorHasWon(false))
+                {
                     MessageBox.Show("White has won");
                 }
                 System.Windows.Application.Current.Shutdown();
             }
+        }
 
+        /// <summary>
+        /// Check if player can do a move using the current dice.
+        /// </summary>
+        protected void CheckLegalMoves()
+        {
             if (!CanThrow)
             {
                 if (!game.HasLegalMoves(game.BlacksTurn))
@@ -79,7 +104,12 @@ namespace Backgammon.ViewModels
             }
         }
 
-        private void GameChanged(object sender, PropertyChangedEventArgs e)
+        /// <summary>
+        /// Game has changed event callback.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        protected void GameChanged(object sender, PropertyChangedEventArgs e)
         {
             OnPropertyChanged(nameof(PlayerString));
             DiceChached();
@@ -93,19 +123,28 @@ namespace Backgammon.ViewModels
         public bool Dice2Used { get => game.Dice2.Used; }
         public BoardViewModel Board { get; private set; }
 
+        /// <summary>
+        /// The player should throw the dice when they are both used.
+        /// </summary>
         public bool CanThrow { get => Dice1Used && Dice2Used; }
 
-        public String PlayerString { get {
+        /// <summary>
+        /// Name of the player color whose turn it currently is.
+        /// </summary>
+        public String PlayerString
+        {
+            get
+            {
                 if (game.BlacksTurn)
                     return "Black";
                 else
-                    return "White";
-;            } }
+                    return "White";               
+            }
+        }
 
         public RelayCommand ThrowDiceCommand { get; private set; }
 
 
-        //TODO point view model containts to much for the respwan points, for now it works.
         public PointViewModel RespawnPointBlack { get; private set; }
         public PointViewModel RespawnPointRed { get; private set; }
     }

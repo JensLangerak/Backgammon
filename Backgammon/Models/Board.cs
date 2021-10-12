@@ -60,7 +60,7 @@ namespace Backgammon.Models
             RespawnPointRed.OwnerColor = PlayerColor.White;
             RespawnPointRed.NumberOfPieces = 0;
 
-            // For now place all peices at the first point.
+            // For now place all pieces at the first point.
             Points[0].OwnerColor = PlayerColor.Black;
             Points[0].NumberOfPieces = numberOfPieces;
             Points[size - 1].OwnerColor = PlayerColor.White;
@@ -112,7 +112,6 @@ namespace Backgammon.Models
             }
 
             return true;
-
         }
     }
 }

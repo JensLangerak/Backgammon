@@ -40,6 +40,11 @@ namespace Backgammon.Views
             this.SizeChanged += new SizeChangedEventHandler(SizeChangedHandler);
         }
 
+        /// <summary>
+        /// Redraw the controls after the size has changed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void SizeChangedHandler(object sender, EventArgs e)
         {
             var control = sender as Point;
@@ -65,13 +70,13 @@ namespace Backgammon.Views
         private static DependencyProperty ImagePointsProperty =
                 DependencyProperty.Register(nameof(ImagePoints), typeof(PointCollection), typeof(Point));
 
-        public PointCollection ImagePoints
+        private PointCollection ImagePoints
         {
             get
             {
                 return (PointCollection)GetValue(ImagePointsProperty);
             }
-            private set
+            set
             {
                 SetValue(ImagePointsProperty, value);
             }
